@@ -587,11 +587,11 @@ function parsearEvento(evento) {
   const desc = evento.description || '';
   const titulo = evento.summary || '';
 
-  // Nombre del cliente — está en el título del evento en Calendly: "Sesión con Nombre Apellido"
-  let nombre = titulo;
-  // Calendly pone el nombre después de "con" o entre paréntesis, o como título directo
+  // Nombre del cliente — quitar el tipo de sesión del título
+  let nombre = titulo.replace(/\s*[-–]\s*.+$/, '').trim();
+  // Si el título tiene "con NombreApellido", extraerlo
   const matchCon = titulo.match(/con\s+(.+)/i);
-  if (matchCon) nombre = matchCon[1].trim();
+  if (matchCon) nombre = matchCon[1].replace(/\s*[-–]\s*.+$/, '').trim();
 
   // Teléfono
   let telefono = '';
