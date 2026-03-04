@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recordatorios — Vanesa Juriol</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F0D0B;
+    --surface: #1A1612;
+    --surface2: #231E19;
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(201,168,76,0.15);
+    --rose: #C47E7E;
+    --green: #7EAF8A;
+    --text: #F0EBE3;
+    --muted: #8A7F72;
+    --border: rgba(201,168,76,0.2);
+    --shadow: 0 8px 40px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image: radial-gradient(ellipse at top, #1e1710 0%, #0F0D0B 60%);
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 40px 20px 24px;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 16px auto 0;
+    opacity: 0.5;
+  }
+
+  .header-eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .header p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 6px;
+    font-weight: 300;
+  }
+
+  /* MAIN */
+  .main { padding: 20px 16px 40px; max-width: 600px; margin: 0 auto; }
+
+  /* CONNECT SCREEN */
+  #screen-connect { text-align: center; padding: 20px 0; }
+
+  .connect-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 24px;
+    margin-bottom: 16px;
+  }
+
+  .connect-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .connect-card h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .connect-card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 15px 20px;
+    background: var(--gold);
+    color: #0F0D0B;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-google:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+
+  .privacy-note {
+    font-size: 0.73rem;
+    color: var(--muted);
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* LOADING */
+  #screen-loading { text-align: center; padding: 60px 20px; display: none; }
+
+  .spinner {
+    width: 40px; height: 40px;
+    border: 2px solid var(--border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text { color: var(--muted); font-size: 0.85rem; }
+
+  /* DASHBOARD */
+  #screen-dashboard { display: none; }
+
+  .user-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+  }
+
+  .user-info { display: flex; align-items: center; gap: 10px; }
+  .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); }
+  .user-name { font-size: 0.85rem; font-weight: 500; }
+  .user-email { font-size: 0.72rem; color: var(--muted); }
+
+  .btn-logout {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { color: var(--rose); border-color: var(--rose); }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+
+  .section-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  /* TURNO CARD */
+  .turno-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .turno-card:hover { border-color: rgba(201,168,76,0.4); }
+
+  .turno-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .turno-nombre {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .turno-badge {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--gold-dim);
+    color: var(--gold);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  .turno-badge.urgente { background: rgba(196,126,126,0.15); color: var(--rose); }
+
+  .turno-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .info-item { }
+  .info-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 2px; font-weight: 500; }
+  .info-value { font-size: 0.85rem; color: var(--text); font-weight: 400; }
+
+  .turno-sesion {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-style: italic;
+  }
+
+  .turno-sesion span { color: var(--gold-light); font-style: normal; font-weight: 500; }
+
+  .btn-whatsapp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 13px;
+    background: #25D366;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-whatsapp:hover { background: #20BA5A; transform: translateY(-1px); }
+
+  .btn-whatsapp svg { width: 18px; height: 18px; }
+
+  /* ENVIADO */
+  .turno-card.enviado { opacity: 0.5; }
+  .turno-card.enviado .btn-whatsapp { background: var(--surface2); color: var(--muted); cursor: default; }
+  .turno-card.enviado .btn-whatsapp:hover { transform: none; }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+  .empty h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--text); margin-bottom: 6px; }
+  .empty p { font-size: 0.82rem; line-height: 1.6; }
+
+  /* REFRESH */
+  .btn-refresh {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+  }
+  .btn-refresh:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* ERROR */
+  .error-box {
+    background: rgba(196,126,126,0.1);
+    border: 1px solid rgba(196,126,126,0.3);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 0.82rem;
+    color: var(--rose);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  /* MODAL preview */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px 36px;
+    width: 100%;
+    max-width: 600px;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  .modal-handle { width: 40px; height: 3px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--gold); margin-bottom: 14px; }
+
+  .mensaje-preview {
+    background: #075E54;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #ECE5DD;
+    white-space: pre-wrap;
+    margin-bottom: 16px;
+    font-family: 'Jost', sans-serif;
+  }
+
+  .modal-actions { display: flex; gap: 10px; }
+  .btn-modal-cancel { flex: 1; padding: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-family: 'Jost', sans-serif; font-size: 0.85rem; cursor: pointer; }
+  .btn-modal-send { flex: 2; padding: 12px; background: #25D366; border: none; border-radius: 10px; color: white; font-family: 'Jost', sans-serif; font-weight: 600; font-size: 0.85rem; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">✨ Sistema de recordatorios</div>
+  <h1>Vanesa Juriol</h1>
+  <p>Turnos próximas 48 horas</p>
+</div>
+
+<div class="main">
+
+  <!-- CONNECT -->
+  <div id="screen-connect">
+    <div class="connect-card">
+      <span class="connect-icon">🗓️</span>
+      <h2>Conectar con Google Calendar</h2>
+      <p>Al conectarte, la app leerá automáticamente los turnos de las próximas 48hs y preparará los recordatorios de WhatsApp listos para enviar.</p>
+      <button class="btn-google" onclick="conectarGoogle()">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        Conectar con Google
+      </button>
+      <p class="privacy-note">🔒 Solo lee eventos de tu calendario. No guarda ni comparte ningún dato.</p>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="screen-loading">
+    <div class="spinner"></div>
+    <p class="loading-text">Buscando turnos de las próximas 48hs...</p>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="screen-dashboard">
+    <div class="user-bar">
+      <div class="user-info">
+        <img class="user-avatar" id="user-avatar" src="" alt="">
+        <div>
+          <div class="user-name" id="user-name"></div>
+          <div class="user-email" id="user-email"></div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+    </div>
+
+    <div id="error-container"></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="section-title">Próximas 48 horas</div>
+      <button class="btn-refresh" onclick="cargarTurnos()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0018.49 15"/></svg>
+        Actualizar
+      </button>
+    </div>
+    <div class="section-sub" id="section-sub">Cargando...</div>
+
+    <div id="lista-turnos"></div>
+  </div>
+
+</div>
+
+<!-- MODAL PREVIEW -->
+<div class="modal-overlay" id="modal" onclick="cerrarModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Vista previa del mensaje</div>
+    <div class="mensaje-preview" id="modal-mensaje"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="cerrarModal()">Cancelar</button>
+      <a class="btn-modal-send" id="modal-link" href="#" target="_blank" onclick="marcarEnviado()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.104 1.508 5.83L0 24l6.335-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.732.975.999-3.648-.234-.374A9.818 9.818 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+        Abrir WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== CONFIG =====
+// Client ID público de Google (OAuth para apps web del lado cliente)
+// Usamos el scope de solo lectura de Calendar
+const CLIENT_ID = '1064914108885-m0sepl1lvq5lor0qfk4ii291k3e5jtko.apps.googleusercontent.com';
+const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly profile email';
+
+let tokenClient;
+let accessToken = null;
+let turnosData = [];
+let turnoActual = null;
+
+// Mensajes por tipo de sesión
+const MENSAJES = {
+  default: (nombre, fecha, hora, tipoSesion, linkRepro) =>
+`🌟 Recordatorio automático de Vanesa Juriol
+Hola ${nombre} 💫 Te recordamos tu sesión de ${tipoSesion} agendada para el ${fecha} a las ${hora}hs.
+✨ Te esperamos!
+Por favor elegí una opción:
+✅ Confirmo mi sesión → respondé este mensaje con la palabra CONFIRMO
+🔄 Necesito cambios → reprogramá acá: ${linkRepro}`
+};
+
+function getMensaje(nombre, fecha, hora, tipoSesion, linkRepro) {
+  return MENSAJES.default(nombre, fecha, hora, tipoSesion, linkRepro || 'https://calendly.com/vanesajuriol');
+}
+
+// ===== GOOGLE OAUTH (sin backend, solo cliente) =====
+function conectarGoogle() {
+  // Cargamos el script de Google Identity Services
+  if (!window.google) {
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.onload = iniciarOAuth;
+    script.onerror = () => mostrarError('No se pudo cargar Google. Verificá tu conexión a internet.');
+    document.head.appendChild(script);
+  } else {
+    iniciarOAuth();
+  }
+}
+
+function iniciarOAuth() {
+  // Usamos el flujo implícito (token en el cliente, sin backend)
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: async (resp) => {
+      if (resp.error) {
+        mostrarError('No se pudo conectar con Google: ' + resp.error);
+        return;
+      }
+      accessToken = resp.access_token;
+      localStorage.setItem('gtoken', accessToken);
+      await cargarPerfil();
+      await cargarTurnos();
+    },
+  });
+  tokenClient.requestAccessToken();
+}
+
+// ===== PERFIL =====
+async function cargarPerfil() {
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    const u = await r.json();
+    document.getElementById('user-avatar').src = u.picture || '';
+    document.getElementById('user-name').textContent = u.name || '';
+    document.getElementById('user-email').textContent = u.email || '';
+    mostrarPantalla('dashboard');
+  } catch(e) {
+    mostrarError('Error al cargar tu perfil de Google.');
+  }
+}
+
+// ===== CARGAR TURNOS =====
+async function cargarTurnos() {
+  mostrarPantalla('loading');
+  document.getElementById('error-container').innerHTML = '';
+
+  try {
+    const ahora = new Date();
+    const en48hs = new Date(ahora.getTime() + 48 * 60 * 60 * 1000);
+
+    const params = new URLSearchParams({
+      timeMin: ahora.toISOString(),
+      timeMax: en48hs.toISOString(),
+      singleEvents: 'true',
+      orderBy: 'startTime',
+      maxResults: '50',
+    });
+
+    const r = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events?${params}`, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+
+    if (r.status === 401) {
+      // Token expirado
+      accessToken = null;
+      localStorage.removeItem('gtoken');
+      mostrarPantalla('connect');
+      return;
+    }
+
+    const data = await r.json();
+    const eventos = data.items || [];
+
+    // Filtrar solo eventos que parecen turnos de clientes (tienen descripción con datos de Calendly)
+    turnosData = eventos
+      .filter(e => e.description && e.description.includes('Número de teléfono'))
+      .map(e => parsearEvento(e));
+
+    mostrarPantalla('dashboard');
+    renderTurnos();
+
+  } catch(e) {
+    mostrarPantalla('dashboard');
+    mostrarError('Error al leer el calendario. Intentá actualizar.');
+  }
+}
+
+// ===== PARSEAR EVENTO =====
+function parsearEvento(evento) {
+  const desc = evento.description || '';
+  const titulo = evento.summary || '';
+
+  // Nombre del cliente — está en el título del evento en Calendly: "Sesión con Nombre Apellido"
+  let nombre = titulo;
+  // Calendly pone el nombre después de "con" o entre paréntesis, o como título directo
+  const matchCon = titulo.match(/con\s+(.+)/i);
+  if (matchCon) nombre = matchCon[1].trim();
+
+  // Teléfono
+  let telefono = '';
+  const matchTel = desc.match(/N[uú]mero de tel[eé]fono[:\s]+([+\d\s\-().]+)/i);
+  if (matchTel) telefono = matchTel[1].replace(/\s+/g, '').trim();
+
+  // Tipo de sesión
+  let tipoSesion = '';
+  const matchTipo = desc.match(/Tipo de sesi[oó]n[^:]*:+\s*([^\n\r]+)/i);
+  if (matchTipo) tipoSesion = matchTipo[1].trim();
+
+  // Link de reprogramación
+  let linkRepro = '';
+  const matchRepro = desc.match(/Reprogramar[:\s]+(https?:\/\/\S+)/i);
+  if (matchRepro) linkRepro = matchRepro[1].trim();
+
+  // Fecha y hora
+  const inicio = evento.start?.dateTime || evento.start?.date;
+  const fechaObj = new Date(inicio);
+  const fecha = fechaObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const hora = fechaObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+
+  // Horas hasta el turno
+  const horasHasta = Math.round((fechaObj - new Date()) / (1000 * 60 * 60));
+
+  return { id: evento.id, nombre, telefono, tipoSesion, fecha, hora, fechaObj, horasHasta, linkRepro, raw: evento };
+}
+
+// ===== RENDER TURNOS =====
+function renderTurnos() {
+  const lista = document.getElementById('lista-turnos');
+  const sub = document.getElementById('section-sub');
+
+  if (turnosData.length === 0) {
+    sub.textContent = 'No hay turnos en las próximas 48 horas';
+    lista.innerHTML = `
+      <div class="empty">
+        <span class="empty-icon">🌙</span>
+        <h3>Sin turnos próximos</h3>
+        <p>No hay sesiones agendadas en las próximas 48 horas.<br>Actualizá más tarde.</p>
+      </div>`;
+    return;
+  }
+
+  sub.textContent = `${turnosData.length} turno${turnosData.length > 1 ? 's' : ''} encontrado${turnosData.length > 1 ? 's' : ''}`;
+
+  lista.innerHTML = turnosData.map((t, i) => {
+    const enviado = localStorage.getItem('enviado_' + t.id);
+    const urgente = t.horasHasta <= 12;
+    const sinTel = !t.telefono;
+
+    return `
+    <div class="turno-card ${enviado ? 'enviado' : ''}" id="card-${i}">
+      <div class="turno-header">
+        <div class="turno-nombre">${t.nombre || 'Cliente'}</div>
+        <div class="turno-badge ${urgente ? 'urgente' : ''}">${urgente ? '⚡ ' : ''}en ${t.horasHasta}hs</div>
+      </div>
+      <div class="turno-info">
+        <div class="info-item">
+          <div class="info-label">Fecha</div>
+          <div class="info-value">${t.fecha}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Hora</div>
+          <div class="info-value">${t.hora}hs</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">WhatsApp</div>
+          <div class="info-value">${t.telefono || '—'}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Pago</div>
+          <div class="info-value" style="font-size:0.78rem">${extraerPago(t.raw.description)}</div>
+        </div>
+      </div>
+      ${t.tipoSesion ? `<div class="turno-sesion">Sesión: <span>${t.tipoSesion}</span></div>` : ''}
+      ${sinTel
+        ? `<div style="font-size:0.78rem;color:var(--rose);padding:10px 0">⚠️ Sin número de teléfono en el evento</div>`
+        : enviado
+          ? `<button class="btn-whatsapp" disabled>✅ Recordatorio enviado</button>`
+          : `<button class="btn-whatsapp" onclick="previsualizarMensaje(${i})">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.104 1.508 5.83L0 24l6.335-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.732.975.999-3.648-.234-.374A9.818 9.818 0 012.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z"/></svg>
+              Enviar recordatorio por WhatsApp
+            </button>`
+      }
+    </div>`;
+  }).join('');
+}
+
+function extraerPago(desc) {
+  if (!desc) return '—';
+  const m = desc.match(/forma de pago[^:]*:\s*([^\n\r]+)/i);
+  return m ? m[1].trim() : '—';
+}
+
+// ===== PREVIEW MODAL =====
+function previsualizarMensaje(idx) {
+  const t = turnosData[idx];
+  turnoActual = { ...t, idx };
+
+  const mensaje = getMensaje(t.nombre, t.fecha, t.hora, t.tipoSesion, t.linkRepro);
+  document.getElementById('modal-mensaje').textContent = mensaje;
+
+  const tel = t.telefono.replace(/[^+\d]/g, '');
+  const msgEncoded = encodeURIComponent(mensaje);
+  document.getElementById('modal-link').href = `https://wa.me/${tel}?text=${msgEncoded}`;
+
+  document.getElementById('modal').classList.add('open');
+}
+
+function cerrarModal(e) {
+  if (!e || e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+  }
+}
+
+function marcarEnviado() {
+  if (!turnoActual) return;
+  localStorage.setItem('enviado_' + turnoActual.id, '1');
+  setTimeout(() => {
+    renderTurnos();
+    document.getElementById('modal').classList.remove('open');
+  }, 500);
+}
+
+// ===== UTILS =====
+function mostrarPantalla(nombre) {
+  document.getElementById('screen-connect').style.display = nombre === 'connect' ? 'block' : 'none';
+  document.getElementById('screen-loading').style.display = nombre === 'loading' ? 'block' : 'none';
+  document.getElementById('screen-dashboard').style.display = nombre === 'dashboard' ? 'block' : 'none';
+}
+
+function mostrarError(msg) {
+  document.getElementById('error-container').innerHTML = `<div class="error-box">⚠️ ${msg}</div>`;
+}
+
+function cerrarSesion() {
+  accessToken = null;
+  localStorage.removeItem('gtoken');
+  mostrarPantalla('connect');
+}
+
+// ===== INIT =====
+// Nota: Esta app necesita un Client ID de Google real para funcionar.
+// Instrucciones simples en pantalla si no está configurado.
+window.onload = function() {
+  // Verificamos si hay token guardado (solo dura ~1 hora, Google lo invalida)
+  const savedToken = localStorage.getItem('gtoken');
+  if (savedToken) {
+    accessToken = savedToken;
+    // Intentamos cargar directamente
+    mostrarPantalla('loading');
+    cargarPerfil().then(() => cargarTurnos()).catch(() => {
+      accessToken = null;
+      localStorage.removeItem('gtoken');
+      mostrarPantalla('connect');
+    });
+  } else {
+    mostrarPantalla('connect');
+  }
+};
+</script>
+</body>
+</html>
